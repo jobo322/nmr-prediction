@@ -28,6 +28,7 @@ function getNMR(entry) {
     } else if (key.match(/Spectrum.*\d$/)) {
       // this is an assignment
       let index = Number(key.replace(/.* /, ''));
+      if (!results[index]) continue;
       results[index].nucleus = key.replace(/Spectrum (.*) .*/, '$1');
       results[index].assignmentString = entry[key];
     } else {
@@ -37,6 +38,7 @@ function getNMR(entry) {
             let temperatures = entry[key].split(/(?=\d:)/).map((v) => v.trim());
             for (let temperaturePart of temperatures) {
               let index = Number(temperaturePart.replace(/:.*/, ''));
+              if (!results[index]) continue;
               let temperature = temperaturePart.replace(/.*:/, '');
               if (!isNaN(temperature)) {
                 results[index].temperature = Number(temperature);
@@ -49,6 +51,7 @@ function getNMR(entry) {
             let parts = entry[key].split(/(?=\d:)/).map((v) => v.trim());
             for (let fieldPart of parts) {
               let index = Number(fieldPart.replace(/:.*/, ''));
+              if (!results[index]) continue;
               let field = fieldPart.replace(/.*:/, '');
               if (!isNaN(field)) {
                 results[index].field = Number(field);
@@ -61,6 +64,7 @@ function getNMR(entry) {
             let parts = entry[key].split(/(?=\d:)/).map((v) => v.trim());
             for (let solventPart of parts) {
               let index = Number(solventPart.replace(/:.*/, ''));
+              if (!results[index]) continue;
               let solvent = solventPart.replace(/.*:/, '');
               if (solvent !== 'Unreported') {
                 results[index].solvent = solvent;

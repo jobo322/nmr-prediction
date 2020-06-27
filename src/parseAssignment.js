@@ -1,4 +1,5 @@
 import Debug from 'debug';
+
 const debug = new Debug('parseAssignment');
 
 export default function parseAssignment(spectrum, mapping) {
@@ -8,16 +9,12 @@ export default function parseAssignment(spectrum, mapping) {
     const fields = line.split(';');
     const atomNumber = Number(fields[2]);
     if (atomNumber > mapping.length) {
-      throw Error('atomNumber too big');
+      console.log(atomNumber, mapping.length);
+      console.error(`atomNumber too big: ${JSON.stringify(spectrum)}`);
     }
     if (atomNumber !== mapping[atomNumber]) {
       debug(
-        'renumbering ' +
-          spectrum.id +
-          ' from:' +
-          atomNumber +
-          ' to:' +
-          mapping[atomNumber],
+        `renumbering ${spectrum.id} from:${atomNumber} to:${mapping[atomNumber]}`,
       );
     }
     results.push({
