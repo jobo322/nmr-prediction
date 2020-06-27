@@ -1,10 +1,14 @@
-import { readdirSync, readFileSync, fstat, writeFileSync } from 'fs';
+import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+
 import median from 'ml-array-median';
+import min from 'ml-array-min';
+import max from 'ml-array-max';
+import std from 'ml-array-standard-deviation';
 
 function joinPredictions() {
   let files = readdirSync(join(__dirname, '../output')).filter((file) =>
-    file.match(/json$/),
+    file.match(/^part.*json$/),
   );
 
   let results = {};
@@ -26,14 +30,20 @@ function joinPredictions() {
   for (let nucleus in results) {
     for (let sphere = 0; sphere < 5; sphere++) {
       for (let key in results[nucleus][sphere]) {
-        results[nucleus][sphere][key] = median(results[nucleus][sphere][key]);
+        results[nucleus][sphere][key] = {
+          median: median(results[nucleus][sphere][key]),
+          min: min(results[nucleus][sphere][key]),
+          max: max(results[nucleus][sphere][key]),
+          std: std(results[nucleus][sphere][key]),
+          nb: results[nucleus][sphere][key].length,
+        };
       }
     }
   }
 
   for (let nucleus in results) {
     writeFileSync(
-      join(__dirname, '../output/' + nucleus + '.json'),
+      join(__dirname, `../output/${nucleus}.json`),
       JSON.stringify(results[nucleus]),
     );
   }

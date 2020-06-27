@@ -5,13 +5,21 @@
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
-.
+The goal is to create a tool to predict NMR spectra for nmrshiftdb2 database.
+
+Original data can be found at:
+
+https://nmrshiftdb.nmr.uni-koeln.de/nmrshiftdb/media-type/html/user/anon/page/default.psml/js_pane/P-Help;jsessionid=6D9041ACAF227D0B0531D1EADFAF8E13
 
 ## Installation
 
 `$ npm i nmr-prediction`
 
 ## Usage
+
+You should split the big SDF that is zipped ind ata
+
+node -r esm src/split.js
 
 ```js
 import library from 'nmr-prediction';
