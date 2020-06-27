@@ -11,24 +11,28 @@ Original data can be found at:
 
 https://nmrshiftdb.nmr.uni-koeln.de/nmrshiftdb/media-type/html/user/anon/page/default.psml/js_pane/P-Help;jsessionid=6D9041ACAF227D0B0531D1EADFAF8E13
 
-## Installation
-
-`$ npm i nmr-prediction`
-
 ## Usage
 
-You should split the big SDF that is zipped ind ata
+The original data is in 'data'.
 
-node -r esm src/split.js
+First we split the zipped original data:
 
-```js
-import library from 'nmr-prediction';
+`node -r esm src/split.js`
 
-const result = library(args);
-// result is ...
-```
+This creates 5 files in the `output` folder.
 
-## [API Documentation](https://cheminfo.github.io/nmr-prediction/)
+After we calculate the hoses codes and chemical shifts.
+
+`node -r esm src/createJSON.js`
+
+This json has information like solvent, nucleus, etc.
+
+Finally we create databases for each nucleus, currently
+ignoring the solvent
+
+`node -r esm src/joinPredictions.js`
+
+This will create one file per nucleus in the `output` folder.
 
 ## License
 
