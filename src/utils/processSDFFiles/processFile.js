@@ -1,9 +1,8 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+const { readFileSync, writeFileSync } = require('fs');
 
-import parseSDF from './parseSDF';
+const { default: parseSDF } = require('./parseSDF');
 
-export default function processFile(filename) {
+module.exports = function processFile(filename) {
   let sdfText = readFileSync(filename, 'utf8');
   let results = parseSDF(sdfText);
 
@@ -28,6 +27,4 @@ export default function processFile(filename) {
   }
 
   writeFileSync(filename.replace('.sdf', '.json'), JSON.stringify(hoses));
-}
-
-processFile(join(__dirname, '../output', process.argv[2]));
+};

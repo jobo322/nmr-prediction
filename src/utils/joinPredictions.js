@@ -1,13 +1,13 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import max from 'ml-array-max';
 import median from 'ml-array-median';
 import min from 'ml-array-min';
-import max from 'ml-array-max';
 import std from 'ml-array-standard-deviation';
 
 function joinPredictions() {
-  let files = readdirSync(join(__dirname, '../output')).filter((file) =>
+  let files = readdirSync(join(__dirname, '../../output')).filter((file) =>
     file.match(/^part.*json$/),
   );
 
@@ -15,7 +15,7 @@ function joinPredictions() {
 
   for (let file of files) {
     let data = JSON.parse(
-      readFileSync(join(__dirname, '../output', file), 'utf8'),
+      readFileSync(join(__dirname, '../../output', file), 'utf8'),
     );
     for (let datum of data) {
       if (!results[datum.nucleus]) {
@@ -43,7 +43,7 @@ function joinPredictions() {
 
   for (let nucleus in results) {
     writeFileSync(
-      join(__dirname, `../output/${nucleus}.json`),
+      join(__dirname, `../../databases/${nucleus}.json`),
       JSON.stringify(results[nucleus]),
     );
   }

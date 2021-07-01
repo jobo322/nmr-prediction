@@ -1,18 +1,12 @@
-import Debug from 'debug';
-import OCL from 'openchemlib';
 import {
   addDiastereotopicMissingChirality,
   getHoseCodesAndDiastereotopicIDs,
-  initOCL,
 } from 'openchemlib-utils';
+import OCL from 'openchemlib/minimal';
 import SDFParser from 'sdf-parser';
 
 import combineFields from './combineFields';
 import parseAssignment from './parseAssignment';
-
-const debug = new Debug('parseSDF');
-
-initOCL(OCL);
 
 export default function parseSDF(sdfText) {
   let sdf = SDFParser(sdfText);
@@ -23,7 +17,7 @@ export default function parseSDF(sdfText) {
       const entry = sdf.molecules[i];
       console.log(`${i} / ${sdf.molecules.length}`);
       let spectra = combineFields(entry);
-  
+
       const { molecule, map: mapping } = OCL.Molecule.fromMolfileWithAtomMap(
         entry.molfile,
       );
@@ -33,7 +27,7 @@ export default function parseSDF(sdfText) {
         results.push(spectrum);
         current.push(spectrum);
       }
-  
+
       molecule.addImplicitHydrogens();
       addDiastereotopicMissingChirality(molecule);
       const diaIDs = getHoseCodesAndDiastereotopicIDs(molecule);
@@ -42,10 +36,9 @@ export default function parseSDF(sdfText) {
           assignment.hoses = diaIDs[assignment.atom];
         }
       }
-    } catch (e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
-   
   }
 
   return results;

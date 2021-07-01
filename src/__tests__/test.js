@@ -1,7 +1,9 @@
-import { myModule } from '..';
+import { join } from 'fs';
 
-describe('test myModule', () => {
-  it('should return 42', () => {
-    expect(myModule()).toEqual(42);
-  });
-});
+import processFile from '../utils/processSDFFiles/processFile';
+
+function test() {
+  processFile(join(__dirname, '../data/medium.sdf'));
+}
+
+test();
