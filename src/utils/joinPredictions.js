@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 import max from 'ml-array-max';
+import mean from 'ml-array-mean';
 import median from 'ml-array-median';
 import min from 'ml-array-min';
 import std from 'ml-array-standard-deviation';
@@ -31,6 +32,7 @@ function joinPredictions() {
     for (let sphere = 0; sphere < 5; sphere++) {
       for (let key in results[nucleus][sphere]) {
         results[nucleus][sphere][key] = {
+          mean: mean(results[nucleus][sphere][key]),
           median: median(results[nucleus][sphere][key]),
           min: min(results[nucleus][sphere][key]),
           max: max(results[nucleus][sphere][key]),
