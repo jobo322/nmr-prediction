@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
+import { signalsToRanges } from 'nmr-processing';
 import OCL from 'openchemlib/minimal';
 
 import { createInputJSON } from './utils/createInputJSON/createInputJSON';
@@ -17,16 +18,25 @@ for (let file of files) {
   );
 }
 
-function predict(molfile, options = {}) {
+/**
+ *
+ * @param {*} molfile
+ * @param {*} options
+ * @returns
+ */
+
+export function predict(molfile, options = {}) {
   const {
     nucleus = '13C',
+    deltaByMean = false,
     ignoreLabile = true,
-    use = 'median',
-    levels = [4, 3, 2, 1, 0],
+    keepHose = false,
+    levels = [6, 5, 4, 3, 2, 1, 0],
     includeDistanceMatrix = false,
   } = options;
 
   let molecule = OCL.Molecule.fromMolfile(molfile);
+
   molecule.addImplicitHydrogens();
   molecule.addMissingChirality();
 
@@ -37,13 +47,57 @@ function predict(molfile, options = {}) {
 
   let predictions = queryByHose(inputJSON, databases[nucleus], {
     ignoreLabile,
-    use,
+    deltaByMean,
     levels,
+    keepHose,
     nucleus,
   });
-  console.log(predictions);
+
+  const signals = formatSignals(predictions);
+  const joinedSignals = joinSignalByDiaID(signals);
+  return {
+    molfile,
+    diaIDs: inputJSON.diaIDs.map((e) => e.diaId),
+    joinedSignals,
+    signals,
+    ranges: signalsToRanges(joinedSignals),
+  };
 }
 
-let molfile = OCL.Molecule.fromSmiles('CCCCC').toMolfile();
+function formatSignals(predictions) {
+  let signals = [];
+  for (const prediction of predictions) {
+    const { nb, std, min, max, atomIDs, nbAtoms, delta, level, diaIDs } =
+      prediction;
+    let stat = {
+      nb,
+      level,
+      std,
+      min,
+      max,
+    };
+    signals.push({
+      delta,
+      assignment: atomIDs,
+      diaID: diaIDs,
+      nbAtoms,
+      j: [],
+      stat,
+    });
+  }
+  return signals;
+}
 
-predict(molfile);
+function joinSignalByDiaID(signals) {
+  let joinedSignals = {};
+  for (let signal of signals) {
+    let diaID = signal.diaID[0];
+    if (!joinedSignals[diaID]) {
+      joinedSignals[diaID] = signal;
+    } else {
+      joinedSignals[diaID].nbAtoms += signal.nbAtoms;
+      joinedSignals[diaID].assignment.push(...signal.assignment);
+    }
+  }
+  return Object.values(joinedSignals);
+}

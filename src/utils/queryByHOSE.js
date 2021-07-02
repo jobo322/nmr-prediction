@@ -1,11 +1,11 @@
 export function queryByHose(input, db, options) {
-  const { nucleus, use, levels, keepHose, ignoreLabile } = options;
+  const { nucleus, levels, deltaByMean, keepHose, ignoreLabile } = options;
 
   levels.sort((a, b) => b - a);
   const atomLabel = nucleus.replace(/\d/g, '');
   const toReturn = [];
 
-  for (const element of input.diaId) {
+  for (const element of input.diaIDs) {
     if (
       element.atomLabel === atomLabel &&
       (!element.isLabile || !ignoreLabile)
@@ -27,11 +27,7 @@ export function queryByHose(input, db, options) {
         let atom = { diaIDs: [element.oclID] };
         atom.atomLabel = atomLabel;
         atom.level = levels[k - 1];
-        if (use === 'median') {
-          atom.delta = res.median;
-        } else if (use === 'mean') {
-          atom.delta = res.mean;
-        }
+        atom.delta = deltaByMean ? res.mean : res.median;
         atom.atomIDs = [atomNumber];
         atom.nb = res.nb;
         atom.std = res.std;

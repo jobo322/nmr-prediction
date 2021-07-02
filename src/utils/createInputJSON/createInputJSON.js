@@ -25,7 +25,6 @@ export function createInputJSON(molecule, options) {
   });
 
   const atoms = {};
-  let hasLabile = false;
   for (const diaId of diaIDs) {
     delete diaId._highlight;
     diaId.hose = getHoseCodesFromDiastereotopicID(
@@ -46,9 +45,9 @@ export function createInputJSON(molecule, options) {
   let toReturn = {
     id: molecule.getIDCode(),
     atom: atoms,
-    diaId: diaIDs,
+    diaIDs,
     nH: nH,
-    hasLabile,
+    hasLabile: diaIDs.some((diaID) => diaID.isLabile),
   };
 
   if (includeDistanceMatrix) {
