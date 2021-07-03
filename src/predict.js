@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 import { signalsToRanges } from 'nmr-processing';
+import { addDiastereotopicMissingChirality } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 
 import { createInputJSON } from './utils/createInputJSON/createInputJSON';
@@ -31,7 +32,7 @@ export function predict(molfile, options = {}) {
     deltaByMean = false,
     ignoreLabile = true,
     keepHose = false,
-    levels = [6, 5, 4, 3, 2, 1, 0],
+    levels = [4, 3, 2, 1, 0],
     includeDistanceMatrix = false,
   } = options;
 
@@ -39,6 +40,7 @@ export function predict(molfile, options = {}) {
 
   molecule.addImplicitHydrogens();
   molecule.addMissingChirality();
+  addDiastereotopicMissingChirality(molecule);
 
   const inputJSON = createInputJSON(molecule, {
     levels,
@@ -67,7 +69,7 @@ export function predict(molfile, options = {}) {
 function formatSignals(predictions) {
   let signals = [];
   for (const prediction of predictions) {
-    const { nb, std, min, max, atomIDs, nbAtoms, delta, level, diaIDs } =
+    const { nb, std, min, max, atomIDs, nbAtoms, delta, level, diaIDs, hose } =
       prediction;
     let stat = {
       nb,
@@ -75,6 +77,7 @@ function formatSignals(predictions) {
       std,
       min,
       max,
+      hose,
     };
     signals.push({
       delta,

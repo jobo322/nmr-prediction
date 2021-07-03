@@ -31,7 +31,6 @@ export function createInputJSON(molecule, options) {
       OCL.Molecule.fromIDCode(diaId.oclID),
       {
         maxSphereSize: levels[0],
-        type: 0,
       },
     );
 
@@ -64,7 +63,7 @@ function isItLabile(diaId, molecule, connections) {
 
   let connectedTo = connections[diaId.atoms[0]];
   let path = connectedTo.find((p) => p && p.length > 1);
-  let atomLabel = molecule.getAtomLabel(path[0]);
+  let atomLabel = molecule.getAtomLabel(path[1]);
 
   switch (atomLabel) {
     case 'N':

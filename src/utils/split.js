@@ -23,7 +23,7 @@ async function split() {
   let i = 0;
   for (; i < molecules.length; i++) {
     current.push(molecules[i]);
-    if (i % 1000 === 0 && i > 0) {
+    if (i % 100 === 0 && i > 0) {
       writeFileSync(
         join(target, `part-${i}.sdf`),
         current.join('$$$$\n').replace(/\r/g, ''),
