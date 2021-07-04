@@ -5,8 +5,10 @@ import {
 } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 
+
+
 export function createInputJSON(molecule, options) {
-  const { levels, includeDistanceMatrix = false } = options;
+  const { levels, includeDistanceMatrix } = options;
 
   let nH =
     molecule.getMolecularFormula().formula.replace(/.*H([0-9]+).*/, '$1') * 1;
@@ -26,7 +28,6 @@ export function createInputJSON(molecule, options) {
 
   const atoms = {};
   for (const diaId of diaIDs) {
-    delete diaId._highlight;
     diaId.hose = getHoseCodesFromDiastereotopicID(
       OCL.Molecule.fromIDCode(diaId.oclID),
       {
@@ -40,7 +41,6 @@ export function createInputJSON(molecule, options) {
 
     diaId.isLabile = isItLabile(diaId, molecule, connections);
   }
-
   let toReturn = {
     id: molecule.getIDCode(),
     atom: atoms,

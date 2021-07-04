@@ -4,7 +4,6 @@ export function queryByHose(input, db, options) {
   levels.sort((a, b) => b - a);
   const atomLabel = nucleus.replace(/\d/g, '');
   const toReturn = [];
-
   for (const element of input.diaIDs) {
     if (
       element.atomLabel === atomLabel &&
@@ -13,8 +12,8 @@ export function queryByHose(input, db, options) {
       let res;
       let k = 0;
       while (!res && k < levels.length) {
-        if (db[levels[k] - 1]) {
-          res = db[levels[k] - 1][element.hose[levels[k] - 1]];
+        if (db[levels[k]]) {
+          res = db[levels[k]][element.hose[levels[k]]];
         }
         k++;
       }
