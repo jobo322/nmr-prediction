@@ -23,7 +23,7 @@ export default function parseSDF(sdfText) {
       const entry = sdf.molecules[i];
       console.log(`${i} / ${sdf.molecules.length}`);
       let spectra = combineFields(entry);
-  
+
       const { molecule, map: mapping } = OCL.Molecule.fromMolfileWithAtomMap(
         entry.molfile,
       );
@@ -33,7 +33,7 @@ export default function parseSDF(sdfText) {
         results.push(spectrum);
         current.push(spectrum);
       }
-  
+
       molecule.addImplicitHydrogens();
       addDiastereotopicMissingChirality(molecule);
       const diaIDs = getHoseCodesAndDiastereotopicIDs(molecule);
@@ -45,7 +45,7 @@ export default function parseSDF(sdfText) {
     } catch (e) {
       console.log(e)
     }
-   
+
   }
 
   return results;

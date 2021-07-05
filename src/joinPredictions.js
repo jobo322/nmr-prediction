@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import max from 'ml-array-max';
 import median from 'ml-array-median';
 import min from 'ml-array-min';
-import max from 'ml-array-max';
 import std from 'ml-array-standard-deviation';
 
 function joinPredictions() {

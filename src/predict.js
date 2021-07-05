@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
+
 import OCL from 'openchemlib';
 import { getDiastereotopicAtomIDsAndH, initOCL, grou } from 'openchemlib-utils';
 
