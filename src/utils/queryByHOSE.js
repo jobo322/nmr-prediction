@@ -25,7 +25,7 @@ export function queryByHose(input, db, options) {
       for (const atomNumber of element.atoms) {
         let atom = { diaIDs: [element.oclID] };
         atom.atomLabel = atomLabel;
-        atom.level = levels[k - 1];
+        atom.level = levels[k];
         atom.delta = deltaByMean ? res.mean : res.median;
         atom.atomIDs = [atomNumber];
         atom.nb = res.nb;
