@@ -1,7 +1,7 @@
-export default /**
+ /**
  * Process the sdf fields
  */
-function getNMR(entry) {
+  export default function getNMR(entry) {
   let results = [];
   // find the number of entries
   let totalNumber = 0;
