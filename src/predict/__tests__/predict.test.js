@@ -1,4 +1,6 @@
 import { predict } from '../predict';
+import { join } from 'path';
+import { readFileSync, readdirSync } from 'fs';
 
 const molfile = `(1S,10S)-9alpha-hydroxy-allo-aromadendrane
   CDKD
@@ -49,9 +51,20 @@ nmrshiftdb2 2459
   9 21  1  1  0  0  0 
   9 16  1  6  0  0  0 
 M  END`;
+
 describe('prediction', () => {
   it('predict a molecule that exist in the DB', () => {
-    let { joinedSignals } = predict(molfile, { nucleus: '1H' });
+    let files = readdirSync(join(__dirname, './oneMoleculeDB')).filter((file) =>
+      file.match(/^\d+[A-Z][a-z]?\.json/),
+    );
+    const databases = {};
+    for (let file of files) {
+      databases[file.replace('.json', '')] = JSON.parse(
+        readFileSync(join(__dirname, './oneMoleculeDB', file)),
+      );
+    }
+    let { joinedSignals, signals } = predict(molfile, { nucleus: '1H', databases });
+    console.log(signals)
     expect(joinedSignals[0].delta !== undefined).toBe(false);
   });
 });
