@@ -1,7 +1,3 @@
-import Debug from 'debug';
-
-const debug = new Debug('parseAssignment');
-
 export default function parseAssignment(spectrum, mapping) {
   let lines = spectrum.assignmentString.split('|').filter((v) => v);
   let results = [];
@@ -13,7 +9,7 @@ export default function parseAssignment(spectrum, mapping) {
       console.error(`atomNumber too big: ${JSON.stringify(spectrum)}`);
     }
     if (atomNumber !== mapping[atomNumber]) {
-      debug(
+      console.log(
         `renumbering ${spectrum.id} from:${atomNumber} to:${mapping[atomNumber]}`,
       );
     }

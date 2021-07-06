@@ -1,16 +1,18 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { cpus } from 'os';
 
 import JSZip from 'jszip';
 
-const target = join(__dirname, '../../output');
-if (!existsSync(target)) {
-  mkdirSync(target);
-}
+export async function split(props) {
 
-async function split() {
+  const {pathToData, target } = props
+  if (!existsSync(target)) {
+    mkdirSync(target);
+  }
+
   const zippedSDF = readFileSync(
-    join(__dirname, '../../data/2020-06-27.sdf.zip'),
+    pathToData,
   );
   const jsZip = new JSZip();
   // more files !
@@ -19,11 +21,17 @@ async function split() {
   let sdf = await zip.file(Object.keys(zip.files)[0]).async('string');
 
   let molecules = sdf.split('$$$$\r\n');
-  let current = [];
+
+  let numberOfMoleculesPerFile = Math.max(
+    1,
+    Math.floor(molecules.length / Math.pow(cpus().length - 1, 2)),
+  );
+
   let i = 0;
+  let current = [];
   for (; i < molecules.length; i++) {
     current.push(molecules[i]);
-    if (i % 100 === 0 && i > 0) {
+    if (i % numberOfMoleculesPerFile === 0 && i > 0) {
       writeFileSync(
         join(target, `part-${i}.sdf`),
         current.join('$$$$\n').replace(/\r/g, ''),
@@ -36,5 +44,3 @@ async function split() {
     current.join('$$$$\n').replace(/\r/g, ''),
   );
 }
-
-split();

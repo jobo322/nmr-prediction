@@ -13,24 +13,9 @@ https://nmrshiftdb.nmr.uni-koeln.de/nmrshiftdb/media-type/html/user/anon/page/de
 
 ## Usage
 
-The original data is in 'data'.
+The original data is in 'data'. After we calculate the hoses codes and chemical shifts, It is a process in parallel so you can choose the number of threads you want to use on it changing the maxThreads parameter directly in file. Finally we create databases for each nucleus, currently ignoring the solvent.
 
-First we split the zipped original data:
-
-`node -r esm src/utils/split.js`
-
-This creates several files in the `output` folder.
-
-After we calculate the hoses codes and chemical shifts, It is a process in parallel so you can choose the number of threads you want to use on it changing the maxThreads option.
-
-`node -r esm src/utils/createJSON.js`
-
-This json has information like solvent, nucleus, etc.
-
-Finally we create databases for each nucleus, currently
-ignoring the solvent
-
-`node -r esm src/utils/joinPredictions.js`
+`node -r esm src/createDB/createDB.js`
 
 This will create one file per nucleus in the `output` folder.
 

@@ -7,8 +7,8 @@ import median from 'ml-array-median';
 import min from 'ml-array-min';
 import std from 'ml-array-standard-deviation';
 
-function joinPredictions() {
-  let files = readdirSync(join(__dirname, '../../output')).filter((file) =>
+export function joinPredictions(target) {
+  let files = readdirSync(target).filter((file) =>
     file.match(/^part.*json$/),
   );
 
@@ -16,7 +16,7 @@ function joinPredictions() {
 
   for (let file of files) {
     let data = JSON.parse(
-      readFileSync(join(__dirname, '../../output', file), 'utf8'),
+      readFileSync(join(target, file), 'utf8'),
     );
     for (let datum of data) {
       if (!results[datum.nucleus]) {
@@ -45,10 +45,8 @@ function joinPredictions() {
 
   for (let nucleus in results) {
     writeFileSync(
-      join(__dirname, `../../databases/${nucleus}.json`),
+      join(target, `${nucleus}.json`),
       JSON.stringify(results[nucleus]),
     );
   }
 }
-
-joinPredictions();
