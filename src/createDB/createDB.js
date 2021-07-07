@@ -7,8 +7,8 @@ import { readdirSync } from 'fs';
 import Piscina from 'piscina';
 
 (async () => {
-  // const sdfFile = join(__dirname, '../../data/oneMolecule.zip');
-    const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
+  const sdfFile = join(__dirname, '../../data/oneMolecule.zip');
+    // const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
   const target = join(__dirname, '../../output');
 
   await split({ pathToData: sdfFile, target });
