@@ -9,8 +9,8 @@ module.exports = function processFile(filename) {
   let hoses = [];
   for (let result of results) {
     for (let assignment of result.assignments) {
-      if (assignment.hoses && assignment.hoses.hoses) {
-        for (let currentHose of assignment.hoses.hoses) {
+      if (assignment.hoses) {
+        for (let i = 0; i < assignment.hoses.length; i++) {
           hoses.push({
             id: result.id,
             temperature: result.temperature,
@@ -18,8 +18,8 @@ module.exports = function processFile(filename) {
             field: result.field,
             nucleus: result.nucleus,
             delta: assignment.delta,
-            sphere: currentHose.sphere,
-            oclID: currentHose.oclID,
+            sphere: i,
+            oclID: assignment.hoses[i],
           });
         }
       }

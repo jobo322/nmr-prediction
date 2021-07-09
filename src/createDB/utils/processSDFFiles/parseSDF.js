@@ -1,6 +1,5 @@
 import {
   addDiastereotopicMissingChirality,
-  getHoseCodesAndDiastereotopicIDs,
   getHoseCodesFromDiastereotopicID,
   getExtendedDiastereotopicAtomIDs,
 } from 'openchemlib-utils';
@@ -17,13 +16,32 @@ export default function parseSDF(sdfText) {
   for (let i = 0; i < sdf.molecules.length; i++) {
     try {
       const entry = sdf.molecules[i];
-      console.log(`${i} / ${sdf.molecules.length}`);
+      if (i % 100 === 0) {
+        console.log(`${i} / ${sdf.molecules.length}`);
+      }
       let spectra = combineFields(entry);
+
+      let molfile = entry.molfile;
+      let separator = molfile.match('\r\n') ? '\r\n' : '\n';
+      let molfileLines = molfile.split(separator);
+
+      for (let j = 0; j < molfileLines.length; j++) {
+        if (molfileLines[j].match(/V[2|3]000/)) {
+          for (let k = j + 1; k < molfileLines.length; k++) {
+            if (molfileLines[k].length < 69) break;
+            molfileLines[k] =
+              `${molfileLines[k].substr(0, 48)
+              }  0${
+              molfileLines[k].substr(51)}`;
+          }
+          break;
+        }
+      }
+      entry.molfile = molfileLines.join(separator);
 
       let { molecule, map: mapping } = OCL.Molecule.fromMolfileWithAtomMap(
         entry.molfile,
       );
-
       molecule = OCL.Molecule.fromMolfile(entry.molfile);
       let current = [];
       for (let spectrum of spectra) {
@@ -34,38 +52,28 @@ export default function parseSDF(sdfText) {
 
       molecule.addImplicitHydrogens();
       addDiastereotopicMissingChirality(molecule);
-      const diaIDs2 = getExtendedDiastereotopicAtomIDs(molecule);
-      const diaIDs = getHoseCodesAndDiastereotopicIDs(molecule);
-      console.log(diaIDs.length, diaIDs2.length);
+      const diaIDs = getExtendedDiastereotopicAtomIDs(molecule);
       for (let result of current) {
         const nucleus = result.nucleus;
         for (let assignment of result.assignments) {
           let atomIndex = assignment.atom;
           let atomLabel = molecule.getAtomLabel(atomIndex);
-          console.log(nucleus, atomLabel, atomIndex);
+          let diaID = diaIDs[atomIndex];
           if (nucleus !== atomLabel && nucleus === '1H') {
-            try {
-              let diaID = diaIDs2[atomIndex];
-              // console.log(escape(diaID.oclID));
-              // console.log(
-              //   getHoseCodesFromDiastereotopicID(
-              //     OCL.Molecule.fromIDCode(diaID.oclID),
-              //     { maxSphereSize: 2 },
-              //   )//.map(e => String(unescape(e))),
-              // );
-              // if (diaID.nbHydrogens < 1) throw new Error('heavy atom has not hydrogens');
-
-              // console.log(
-              //   getHoseCodesFromDiastereotopicID(
-              //     OCL.Molecule.fromIDCode(diaID.hydrogenOCLIDs[0]),
-              //     { maxSphereSize: 6 },
-              //   ),
-              // );
-            } catch (e) {
-              console.log(e);
+            if (diaID.nbHydrogens < 1) {
+              console.log('heavy atom has not hydrogens');
+              continue;
+            } else {
+              diaID = diaID.hydrogenOCLIDs[0];
             }
+          } else {
+            diaID = diaID.oclID;
           }
-          assignment.hoses = diaIDs[assignment.atom];
+          let hoses = getHoseCodesFromDiastereotopicID(
+            OCL.Molecule.fromIDCode(diaID),
+            { maxSphereSize: 6 },
+          );
+          assignment.hoses = hoses;
         }
       }
     } catch (e) {
