@@ -1,23 +1,13 @@
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
-
 import { signalsToRanges } from 'nmr-processing';
 import { addDiastereotopicMissingChirality } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 
+import database from '../../output/databases';
+
 import { createInputJSON } from './createInputJSON';
 import { queryByHose } from './queryByHOSE';
 
-// we will load all the databases
-let files = readdirSync(join(__dirname, '../../output')).filter((file) =>
-  file.match(/^\d+[A-Z][a-z]?\.json/),
-);
-let databases = {};
-for (let file of files) {
-  databases[file.replace('.json', '')] = JSON.parse(
-    readFileSync(join(__dirname, '../../output', file)),
-  );
-}
+
 
 /**
  *
@@ -31,12 +21,12 @@ export function predict(molfile, options = {}) {
     nucleus = '13C',
     deltaByMean = false,
     ignoreLabile = true,
-    keepHose = false,
-    levels = [4, 3, 2, 1, 0],
+    keepHose = true,
+    levels = [6, 5, 4, 3, 2, 1, 0],
     includeDistanceMatrix = false,
   } = options;
 
-  if (options.databases) databases = options.databases;
+  const databases = options.databases ? options.databases : database;
 
   let molecule = OCL.Molecule.fromMolfile(molfile);
 
@@ -48,7 +38,7 @@ export function predict(molfile, options = {}) {
     levels,
     includeDistanceMatrix,
   });
-
+  
   let predictions = queryByHose(inputJSON, databases[nucleus], {
     ignoreLabile,
     deltaByMean,

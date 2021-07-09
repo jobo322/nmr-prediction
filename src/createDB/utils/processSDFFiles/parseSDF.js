@@ -46,10 +46,8 @@ export default function parseSDF(sdfText) {
       let current = [];
       for (let spectrum of spectra) {
         spectrum.assignments = parseAssignment(spectrum, mapping);
-        results.push(spectrum);
         current.push(spectrum);
       }
-
       molecule.addImplicitHydrogens();
       addDiastereotopicMissingChirality(molecule);
       const diaIDs = getExtendedDiastereotopicAtomIDs(molecule);
@@ -64,16 +62,19 @@ export default function parseSDF(sdfText) {
               console.log('heavy atom has not hydrogens');
               continue;
             } else {
-              diaID = diaID.hydrogenOCLIDs[0];
+              diaID = diaID.hydrogenOCLIDs;
             }
           } else {
-            diaID = diaID.oclID;
+            diaID = [ diaID.oclID ];
           }
-          let hoses = getHoseCodesFromDiastereotopicID(
-            OCL.Molecule.fromIDCode(diaID),
-            { maxSphereSize: 6 },
-          );
-          assignment.hoses = hoses;
+          for (const dia of diaID) {
+            let hoses = getHoseCodesFromDiastereotopicID(
+              OCL.Molecule.fromIDCode(dia),
+              { maxSphereSize: 6 },
+            );
+            assignment.hoses = hoses;
+            results.push(JSON.parse(JSON.stringify(result)));
+          }
         }
       }
     } catch (e) {
