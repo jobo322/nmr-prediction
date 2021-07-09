@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
 import { cpus } from 'os';
+import { join } from 'path';
 
 import JSZip from 'jszip';
 
@@ -24,7 +24,7 @@ export async function split(props) {
 
   let numberOfMoleculesPerFile = Math.max(
     1,
-    Math.floor(molecules.length / Math.pow(cpus().length - 1, 2)),
+    Math.floor(molecules.length / Math.pow(cpus().length / 2, 2)),
   );
 
   let i = 0;

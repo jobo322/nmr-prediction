@@ -55,12 +55,12 @@
   },
   "dependencies": {
     "debug": "^4.3.2",
+    "esm": "^3.2.25",
     "jszip": "^3.6.0",
     "ml-array-max": "^1.2.3",
     "ml-array-mean": "^1.1.5",
     "ml-array-median": "^1.1.5",
     "ml-array-min": "^1.2.2",
-    "esm": "^3.2.25",
     "ml-array-standard-deviation": "^1.1.6",
     "nmr-processing": "^1.4.0",
     "openchemlib": "^7.4.0",

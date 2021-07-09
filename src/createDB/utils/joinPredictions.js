@@ -7,8 +7,8 @@ import median from 'ml-array-median';
 import min from 'ml-array-min';
 import std from 'ml-array-standard-deviation';
 
-export function joinPredictions(target) {
-  let files = readdirSync(target).filter((file) =>
+export function joinPredictions(dirname) {
+  let files = readdirSync(dirname).filter((file) =>
     file.match(/^part.*json$/),
   );
 
@@ -16,11 +16,11 @@ export function joinPredictions(target) {
 
   for (let file of files) {
     let data = JSON.parse(
-      readFileSync(join(target, file), 'utf8'),
+      readFileSync(join(dirname, file), 'utf8'),
     );
     for (let datum of data) {
       if (!results[datum.nucleus]) {
-        results[datum.nucleus] = new Array(5).fill(0).map(() => ({}));
+        results[datum.nucleus] = new Array(7).fill(0).map(() => ({}));
       }
       let target = results[datum.nucleus][datum.sphere];
       if (!target[datum.oclID]) target[datum.oclID] = [];
@@ -29,7 +29,7 @@ export function joinPredictions(target) {
   }
 
   for (let nucleus in results) {
-    for (let sphere = 0; sphere < 5; sphere++) {
+    for (let sphere = 0; sphere < 7; sphere++) {
       for (let key in results[nucleus][sphere]) {
         results[nucleus][sphere][key] = {
           mean: mean(results[nucleus][sphere][key]),
@@ -45,7 +45,7 @@ export function joinPredictions(target) {
 
   for (let nucleus in results) {
     writeFileSync(
-      join(target, `${nucleus}.json`),
+      join(dirname, `${nucleus}.json`),
       JSON.stringify(results[nucleus]),
     );
   }

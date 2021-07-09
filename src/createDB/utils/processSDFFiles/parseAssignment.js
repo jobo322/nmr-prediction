@@ -5,8 +5,7 @@ export default function parseAssignment(spectrum, mapping) {
     const fields = line.split(';');
     const atomNumber = Number(fields[2]);
     if (atomNumber > mapping.length) {
-      console.log(atomNumber, mapping.length);
-      console.error(`atomNumber too big: ${JSON.stringify(spectrum)}`);
+      console.error(`In spectrum id: ${spectrum.id} nucleus: ${spectrum.nucleus} atomNumber too big`);
     }
     if (atomNumber !== mapping[atomNumber]) {
       console.log(

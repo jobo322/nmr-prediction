@@ -1,14 +1,17 @@
-import { join, resolve } from 'path';
-import { cpus } from 'os';
-import { split } from './utils/split';
-import { joinPredictions } from './utils/joinPredictions';
 import { readdirSync } from 'fs';
+import { cpus } from 'os';
+import { join, resolve } from 'path';
 
 import Piscina from 'piscina';
 
+import { joinPredictions } from './utils/joinPredictions';
+import { split } from './utils/split';
+
+
+
 (async () => {
   // const sdfFile = join(__dirname, '../../data/oneMolecule.zip');
-    const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
+  const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
   const target = join(__dirname, '../../output');
 
   await split({ pathToData: sdfFile, target });
@@ -23,7 +26,6 @@ import Piscina from 'piscina';
     idleTimeout: 90,
   });
 
-  files = files.slice(0, 2);
   let promises = [];
   for (let file of files) {
     promises.push(piscina.run(join(target, file)));
