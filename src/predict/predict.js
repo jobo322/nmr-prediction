@@ -2,12 +2,21 @@ import { signalsToRanges } from 'nmr-processing';
 import { addDiastereotopicMissingChirality } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 
-import database from '../../output/databases';
+import { readFileSync, readdirSync } from 'fs';
+import { join } from 'path';
 
 import { createInputJSON } from './createInputJSON';
 import { queryByHose } from './queryByHOSE';
 
-
+let files = readdirSync(join(__dirname, '../../output')).filter((file) =>
+  file.match(/^\d+[A-Z][a-z]?\.json/),
+);
+let databases = {};
+for (let file of files) {
+  databases[file.replace('.json', '')] = JSON.parse(
+    readFileSync(join(__dirname, '../../output', file)),
+  );
+}
 
 /**
  *

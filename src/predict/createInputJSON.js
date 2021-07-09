@@ -5,8 +5,6 @@ import {
 } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 
-
-
 export function createInputJSON(molecule, options) {
   const { levels, includeDistanceMatrix } = options;
 
