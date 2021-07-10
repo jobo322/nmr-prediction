@@ -1,7 +1,7 @@
 import {
   addDiastereotopicMissingChirality,
   getHoseCodesFromDiastereotopicID,
-  getExtendedDiastereotopicAtomIDs,
+  getDiastereotopicAtomIDsAndH,
 } from 'openchemlib-utils';
 import OCL from 'openchemlib/minimal';
 import SDFParser from 'sdf-parser';
@@ -50,7 +50,7 @@ export default function parseSDF(sdfText) {
       }
       molecule.addImplicitHydrogens();
       addDiastereotopicMissingChirality(molecule);
-      const diaIDs = getExtendedDiastereotopicAtomIDs(molecule);
+      const diaIDs = getDiastereotopicAtomIDsAndH(molecule);
       for (let result of current) {
         const nucleus = result.nucleus;
         for (let assignment of result.assignments) {

@@ -7,12 +7,10 @@ import Piscina from 'piscina';
 import { joinPredictions } from './utils/joinPredictions';
 import { split } from './utils/split';
 
-
-
 (async () => {
-  const sdfFile = join(__dirname, '../../data/oneMolecule.zip');
-  // const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
-  const target = join(__dirname, '../../output');
+  // const sdfFile = join(__dirname, '../../data/oneMolecule.zip');
+  const sdfFile = join(__dirname, '../../data/2020-06-27.sdf.zip');
+  const target = join(__dirname, '../../output2');
 
   await split({ pathToData: sdfFile, target });
 
